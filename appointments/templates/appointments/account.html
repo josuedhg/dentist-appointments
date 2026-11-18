@@ -1,0 +1,55 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Account · DentalCare{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Account</h1>
+        <p class="lead">Update your information or change your password.</p>
+    </div>
+    {% if is_doctor %}
+        <span class="badge scheduled">Dentist</span>
+    {% elif is_patient %}
+        <span class="badge scheduled">Patient</span>
+    {% endif %}
+</div>
+
+<div class="grid two" style="align-items: start;">
+    <div class="card">
+        <h2>Your information</h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Save changes</button>
+        </form>
+    </div>
+
+    <aside class="stack">
+        <div class="card">
+            <h3>Password</h3>
+            <p class="muted small">
+                Change your password whenever you like. You will need to enter
+                your current password first.
+            </p>
+            <a class="btn secondary" href="{% url 'password-change' %}">Change password</a>
+        </div>
+        <div class="card">
+            <h3>Your role</h3>
+            {% if is_doctor %}
+                <p class="muted small">
+                    You are registered as a dentist. Your schedule is at
+                    <a href="{% url 'doctor-dashboard' %}">My schedule</a>.
+                </p>
+            {% elif is_patient %}
+                <p class="muted small">
+                    You are registered as a patient. Your appointments are at
+                    <a href="{% url 'patient-appointments' %}">My appointments</a>.
+                </p>
+            {% else %}
+                <p class="muted small">No role has been assigned to this account.</p>
+            {% endif %}
+        </div>
+    </aside>
+</div>
+{% endblock %}

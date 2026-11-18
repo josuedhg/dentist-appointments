@@ -1,0 +1,62 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Patients · DentalCare{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Patients</h1>
+        <p class="lead">
+            Create patient accounts, generate login links, and manage their
+            appointments.
+        </p>
+    </div>
+    <div class="actions">
+        <a class="btn" href="{% url 'doctor-patient-create' %}">Register patient</a>
+        <a class="btn secondary" href="{% url 'doctor-appointment-create' %}">New appointment</a>
+    </div>
+</div>
+
+{% if patients %}
+    <div class="card table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Username</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.get_full_name|default:patient.username }}</td>
+                        <td>{{ patient.username }}</td>
+                        <td class="small">{{ patient.email|default:"—" }}</td>
+                        <td>
+                            {% if patient.patient_profile.must_change_password %}
+                                <span class="badge scheduled">Password pending</span>
+                            {% else %}
+                                <span class="badge completed">Active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a class="btn small secondary" href="{% url 'doctor-patient-detail' patient.pk %}">View</a>
+                                <a class="btn small secondary" href="{% url 'doctor-appointment-create' %}?patient={{ patient.pk }}">Set appointment</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="card">
+        <p class="empty">No patients yet.</p>
+        <a class="btn" href="{% url 'doctor-patient-create' %}">Register the first patient</a>
+    </div>
+{% endif %}
+{% endblock %}

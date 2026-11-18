@@ -1,0 +1,22 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Register patient · DentalCare{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 640px; margin: 0 auto;">
+    <h1>Register a patient</h1>
+    <p class="lead">
+        Create the account, then share the private login link with your
+        patient so they can choose a password.
+    </p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button type="submit" class="btn">Create patient account</button>
+            <a class="btn secondary" href="{% url 'doctor-patients' %}">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

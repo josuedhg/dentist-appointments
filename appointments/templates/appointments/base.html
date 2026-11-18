@@ -1,0 +1,242 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}DentalCare Appointments{% endblock %}</title>
+    <style>
+        :root {
+            --brand: #0f766e;
+            --brand-dark: #115e59;
+            --brand-light: #ccfbf1;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --bg: #f8fafc;
+            --danger: #b91c1c;
+            --warning: #b45309;
+            --success: #15803d;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            line-height: 1.55;
+        }
+        a { color: var(--brand-dark); }
+        .container { width: min(1080px, 92vw); margin: 0 auto; }
+        .site-header {
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.85rem 0;
+            flex-wrap: wrap;
+        }
+        .brand {
+            font-weight: 800;
+            font-size: 1.15rem;
+            color: var(--brand-dark);
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        nav { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        nav a { text-decoration: none; font-weight: 600; font-size: 0.94rem; }
+        nav a:hover { color: var(--brand); }
+        main { padding: 2rem 0 3rem; }
+        footer {
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 0.85rem;
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+        h1, h2, h3 { line-height: 1.2; letter-spacing: -0.02em; }
+        h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0 0 0.5rem; }
+        h2 { font-size: 1.35rem; margin: 0 0 0.75rem; }
+        h3 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+        p.lead { color: var(--muted); font-size: 1.05rem; margin-top: 0; }
+        .card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 1.4rem 1.5rem;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+        }
+        .grid { display: grid; gap: 1.25rem; }
+        .grid.two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .stack { display: grid; gap: 1.25rem; }
+        .page-head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+        .btn {
+            display: inline-block;
+            background: var(--brand);
+            color: #fff;
+            text-decoration: none;
+            border: 0;
+            border-radius: 9px;
+            padding: 0.6rem 1rem;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn:hover { background: var(--brand-dark); }
+        .btn.secondary {
+            background: #fff;
+            color: var(--brand-dark);
+            border: 1px solid var(--brand);
+        }
+        .btn.danger { background: var(--danger); }
+        .btn.small { padding: 0.35rem 0.7rem; font-size: 0.85rem; }
+        .link-button {
+            background: none;
+            border: 0;
+            padding: 0;
+            color: var(--brand-dark);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .link-button:hover { text-decoration: underline; }
+        .messages { list-style: none; padding: 0; margin: 0 0 1.25rem; display: grid; gap: 0.6rem; }
+        .messages li {
+            border-radius: 9px;
+            padding: 0.7rem 0.9rem;
+            border: 1px solid var(--line);
+            background: #fff;
+            font-size: 0.95rem;
+        }
+        .messages .success { border-color: #bbf7d0; background: #f0fdf4; color: var(--success); }
+        .messages .error { border-color: #fecaca; background: #fef2f2; color: var(--danger); }
+        .messages .warning { border-color: #fde68a; background: #fffbeb; color: var(--warning); }
+        .messages .info { border-color: #bfdbfe; background: #eff6ff; color: #1d4ed8; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 0.7rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+        th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+        .table-wrap { overflow-x: auto; }
+        .badge {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 0.15rem 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .badge.scheduled { background: #e0f2fe; color: #0369a1; }
+        .badge.completed { background: #dcfce7; color: var(--success); }
+        .badge.cancelled { background: #fee2e2; color: var(--danger); }
+        .muted { color: var(--muted); }
+        .small { font-size: 0.88rem; }
+        .empty { color: var(--muted); padding: 1rem 0; }
+        form p { margin: 0 0 1rem; }
+        form label { display: block; font-weight: 700; font-size: 0.92rem; margin-bottom: 0.3rem; }
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="password"],
+        form input[type="date"],
+        form input[type="time"],
+        form select,
+        form textarea {
+            width: 100%;
+            padding: 0.6rem 0.7rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font: inherit;
+            background: #fff;
+        }
+        form input:focus, form select:focus, form textarea:focus {
+            outline: 2px solid var(--brand-light);
+            border-color: var(--brand);
+        }
+        .helptext { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem; }
+        .helptext ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+        .errorlist { color: var(--danger); margin: 0.3rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; }
+        .inline-form { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .inline-form select { width: auto; padding: 0.35rem 0.5rem; }
+        .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .notice {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #92400e;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+        }
+        .token {
+            display: block;
+            background: #f1f5f9;
+            border: 1px dashed #94a3b8;
+            border-radius: 8px;
+            padding: 0.6rem 0.75rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.82rem;
+            word-break: break-all;
+            margin-top: 0.35rem;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="brand" href="{% url 'home' %}">🦷 DentalCare</a>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            {% if user.is_authenticated %}
+                {% if is_doctor %}
+                    <a href="{% url 'doctor-dashboard' %}">My schedule</a>
+                    <a href="{% url 'doctor-patients' %}">Patients</a>
+                {% endif %}
+                {% if is_patient %}
+                    <a href="{% url 'patient-appointments' %}">My appointments</a>
+                    <a href="{% url 'book-appointment' %}">Book appointment</a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a href="/admin/">Admin</a>
+                {% endif %}
+                <a href="{% url 'account' %}">Account</a>
+                <form method="post" action="{% url 'logout' %}" class="inline-form">
+                    {% csrf_token %}
+                    <button type="submit" class="link-button">Log out</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Log in</a>
+                <a href="{% url 'patient-register' %}">Patient sign up</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="container">
+        DentalCare Appointments &middot; Patients can view an appointment with its private link, no account required.
+    </div>
+</footer>
+</body>
+</html>

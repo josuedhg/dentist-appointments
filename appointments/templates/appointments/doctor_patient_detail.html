@@ -1,0 +1,101 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}{{ patient.get_full_name|default:patient.username }} · DentalCare{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>{{ patient.get_full_name|default:patient.username }}</h1>
+        <p class="lead">Username: <strong>{{ patient.username }}</strong> · Email: {{ patient.email|default:"None provided" }}</p>
+    </div>
+    <div class="actions">
+        <a class="btn" href="{% url 'doctor-appointment-create' %}?patient={{ patient.pk }}">Set appointment</a>
+        <a class="btn secondary" href="{% url 'doctor-patients' %}">Back to patients</a>
+    </div>
+</div>
+
+{% if activation_url %}
+    <div class="card notice" style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.1rem; margin-bottom: 0.4rem; color: #92400e;">Patient Login Link</h2>
+        <p style="margin: 0 0 0.5rem;">
+            Share this private link with the patient. Opening it will log them in automatically and prompt them to choose a password:
+        </p>
+        <span class="token">{{ activation_url }}</span>
+    </div>
+{% endif %}
+
+<div class="grid two" style="align-items: start; margin-bottom: 1.5rem;">
+    <div class="card">
+        <h2>Account status</h2>
+        <p>
+            Status:
+            {% if profile.must_change_password %}
+                <span class="badge scheduled">Password pending</span>
+            {% else %}
+                <span class="badge completed">Active</span>
+            {% endif %}
+        </p>
+        <p class="muted small">
+            {% if profile.must_change_password %}
+                The patient has not chosen their password yet, or their password was reset.
+            {% else %}
+                The patient has chosen their password and can log in normally.
+            {% endif %}
+        </p>
+
+        <form method="post" action="{% url 'doctor-patient-reset-password' patient.pk %}" style="margin-top: 1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn secondary small">Reset password & generate new link</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Actions</h2>
+        <p class="muted small">
+            Schedule a new appointment for this patient on your calendar.
+        </p>
+        <div class="actions" style="margin-top: 1rem;">
+            <a class="btn small" href="{% url 'doctor-appointment-create' %}?patient={{ patient.pk }}">Set appointment</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Appointments</h2>
+    {% if appointments %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Dentist</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.date }}</td>
+                            <td>{{ appointment.time|time:"H:i" }}</td>
+                            <td>{{ appointment.doctor_name }}</td>
+                            <td>
+                                <span class="badge {{ appointment.status }}">{{ appointment.get_status_display }}</span>
+                            </td>
+                            <td class="small">{{ appointment.notes|default:"—" }}</td>
+                            <td>
+                                <a class="small" href="{{ appointment.get_absolute_url }}">View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty">No appointments scheduled for this patient yet.</p>
+        <a class="btn small" href="{% url 'doctor-appointment-create' %}?patient={{ patient.pk }}">Schedule first appointment</a>
+    {% endif %}
+</div>
+{% endblock %}

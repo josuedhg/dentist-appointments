@@ -1,0 +1,40 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Book an appointment · DentalCare{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Book an appointment</h1>
+        <p class="lead">Choose a dentist, a date, and a time that works for you.</p>
+    </div>
+    <a class="btn secondary" href="{% url 'patient-appointments' %}">My appointments</a>
+</div>
+
+<div class="grid two" style="align-items: start;">
+    <div class="card">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Confirm appointment</button>
+        </form>
+    </div>
+
+    <aside class="stack">
+        <div class="card">
+            <h3>What happens next?</h3>
+            <p class="muted small">
+                After booking, you will get a private appointment link. Keep it:
+                anyone with the link can view the appointment details, so only
+                share it with people you trust.
+            </p>
+        </div>
+        {% if not form.fields.doctor.queryset %}
+            <div class="notice">
+                There are no dentists registered yet. Please check back later or
+                ask a dentist to create an account.
+            </div>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}

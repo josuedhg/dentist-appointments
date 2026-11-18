@@ -1,0 +1,25 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Patient sign up · DentalCare{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 620px; margin: 0 auto;">
+    <h1>Create a patient account</h1>
+    <p class="lead">
+        Register, then choose a dentist and a time. Your email address is
+        optional.
+    </p>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Create patient account</button>
+    </form>
+
+    <p class="small muted" style="margin-top: 1.25rem;">
+        Already registered? <a href="{% url 'login' %}">Log in</a>.
+        Are you a dentist? Dentist accounts are created by the clinic
+        administrator — <a href="{% url 'doctor-register' %}">see details</a>.
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Dentist accounts · DentalCare{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 640px; margin: 0 auto;">
+    <h1>Dentist accounts</h1>
+    <p class="lead">
+        Dentist accounts are created by the clinic administrator. Dentists
+        cannot register themselves.
+    </p>
+
+    <p class="muted">
+        If you are a dentist, ask the administrator to create your account.
+        They will give you a username and a temporary password. The first time
+        you log in, you will be asked to choose a new password before you can
+        see your schedule.
+    </p>
+
+    <p class="muted">
+        After that, you can update your name, username, and email at any time
+        from the <strong>Account</strong> page, and change your password there
+        too.
+    </p>
+
+    <div class="actions">
+        <a class="btn" href="{% url 'login' %}">Dentist log in</a>
+        <a class="btn secondary" href="{% url 'home' %}">Back to home</a>
+    </div>
+</div>
+{% endblock %}

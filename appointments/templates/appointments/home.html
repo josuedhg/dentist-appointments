@@ -1,0 +1,54 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}DentalCare Appointments{% endblock %}
+
+{% block content %}
+<section class="page-head">
+    <div>
+        <h1>Book a dental appointment in a few clicks</h1>
+        <p class="lead">
+            Register as a patient to choose a dentist and a time, or sign in as
+            a dentist to manage your schedule.
+        </p>
+    </div>
+</section>
+
+<div class="grid two">
+    <article class="card">
+        <h2>I'm a patient</h2>
+        <p class="muted">
+            Patient accounts are created by your dentist. Ask your dentist for
+            your private registration link to get started, or sign in if you already have an account.
+        </p>
+        <div class="actions">
+            <a class="btn" href="{% url 'login' %}">Log in</a>
+            <a class="btn secondary" href="{% url 'patient-register' %}">Account info</a>
+        </div>
+    </article>
+
+    <article class="card">
+        <h2>I'm a dentist</h2>
+        <p class="muted">
+            Dentist accounts are created by the clinic administrator, who will
+            give you your login details and a temporary password. On your first
+            login you will be asked to choose your own password.
+        </p>
+        <div class="actions">
+            <a class="btn" href="{% url 'login' %}">Dentist log in</a>
+        </div>
+    </article>
+</div>
+
+<div class="card" style="margin-top: 1.25rem;">
+    <h2>Already booked?</h2>
+    <p class="muted">
+        Every appointment has a private link. Open that link to see the date,
+        time, dentist, and status. No login, password, or email is needed.
+        If you were given the link by your dentist, simply open it in your
+        browser.
+    </p>
+    {% if is_patient %}
+        <a class="btn secondary" href="{% url 'patient-appointments' %}">Go to my appointments</a>
+    {% endif %}
+</div>
+{% endblock %}

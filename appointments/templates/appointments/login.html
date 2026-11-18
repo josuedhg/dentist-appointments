@@ -1,0 +1,26 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}Log in · DentalCare{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 520px; margin: 0 auto;">
+    <h1>Log in</h1>
+    <p class="lead">Use your patient or dentist account.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        <button type="submit" class="btn">Log in</button>
+    </form>
+
+    <p class="small muted" style="margin-top: 1.25rem;">
+        No patient account yet? Ask your dentist to create your account (<a href="{% url 'patient-register' %}">details</a>).
+        <br>
+        Dentists: use the account created for you by the clinic administrator.
+        <a href="{% url 'doctor-register' %}">More information</a>.
+    </p>
+</div>
+{% endblock %}

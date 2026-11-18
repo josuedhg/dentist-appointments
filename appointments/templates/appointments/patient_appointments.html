@@ -1,0 +1,59 @@
+{% extends "appointments/base.html" %}
+
+{% block title %}My appointments · DentalCare{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>My appointments</h1>
+        <p class="lead">Appointments you have booked. Open one to get its private link.</p>
+    </div>
+    <a class="btn" href="{% url 'book-appointment' %}">Book new appointment</a>
+</div>
+
+{% if appointments %}
+    <div class="card table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Dentist</th>
+                    <th>Status</th>
+                    <th>Reference</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.date }}</td>
+                        <td>{{ appointment.time|time:"H:i" }}</td>
+                        <td>{{ appointment.doctor_name }}</td>
+                        <td>
+                            <span class="badge {{ appointment.status }}">{{ appointment.get_status_display }}</span>
+                        </td>
+                        <td><code>{{ appointment.short_reference }}</code></td>
+                        <td>
+                            <div class="actions">
+                                <a class="btn small secondary" href="{{ appointment.get_absolute_url }}">View</a>
+                                {% if appointment.status == "scheduled" %}
+                                    <form method="post" action="{% url 'cancel-appointment' appointment.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn small danger">Cancel</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="card">
+        <p class="empty">You have no appointments yet.</p>
+        <a class="btn" href="{% url 'book-appointment' %}">Book your first appointment</a>
+    </div>
+{% endif %}
+{% endblock %}
